@@ -1,0 +1,9 @@
+.TopNav > ul {
+    list-style: none;
+}
+
+#logoImg {
+    height: 70px;
+    width: auto;
+    display: inline;
+}

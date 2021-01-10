@@ -1,25 +1,59 @@
-import logo from './logo.svg';
 import './App.css';
+import TopNav from "./TopNav"
+import Tools from "./Tools"
+import Inventory from './Inventory'
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+import React, { Component } from 'react'
+
+export default class App extends Component {
+  constructor(props) {
+    super(props)
+
+    this.addItemHandler = this.addItemHandler.bind(this);
+    this.deleteItemHandler = this.deleteItemHandler.bind(this);
+
+    this.state = {
+       inventoryItems : []
+    }
+  }
+  
+  //handler for adding items
+  addItemHandler(itemName, itemQty, itemQtyUnit) {
+    this.setState((state, props) => {
+      let newItem = {
+        name: itemName,
+        qty: itemQty,
+        qtyUnit: itemQtyUnit
+      }
+
+      let newItems = [...state.inventoryItems, newItem];
+      return {
+        inventoryItems: newItems
+      }
+    })
+  }
+
+  //handler for deleting an item at an index
+  deleteItemHandler(index) {
+    this.setState((state, props) => {
+      let newItems = [...state.inventoryItems];
+      newItems.splice(index);
+      return {
+        inventoryItems: newItems
+      }
+    })
+  }
+
+  render() {
+    return (
+      <div>
+        <TopNav />
+        <Tools clickHandler={this.addItemHandler}/>
+        <Inventory 
+          inventoryItems={this.state.inventoryItems} 
+          deleteHandler={this.deleteItemHandler}/>
+      </div>
+    )
+  }
 }
 
-export default App;
