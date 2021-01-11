@@ -14,10 +14,27 @@ export default class App extends Component {
     this.decrementHandler = this.decrementHandler.bind(this);
     this.incrementHandler = this.incrementHandler.bind(this);
     this.qtyChangeHandler = this.qtyChangeHandler.bind(this);
+    this.save = this.save.bind(this);
+    this.fetchInventoryItems = this.fetchInventoryItems.bind(this);
 
     this.state = {
-       inventoryItems : []
+       inventoryItems : [],
+       itemsToRemove : []
     }
+  }
+
+  //fetches the inventory items based on an inventory ID
+  fetchInventoryItems() {
+    
+  }
+
+  save() {
+    //Create add items array
+    //Create update items array
+    //iterate through items and assign to each array
+    //send delete items request
+    //send update items request
+    //send add items request
   }
   
   //handler for adding items
@@ -26,7 +43,10 @@ export default class App extends Component {
       let newItem = {
         name: itemName,
         qty: itemQty,
-        qtyUnit: itemQtyUnit
+        qtyUnit: itemQtyUnit,
+        changed: true,
+        inDb: false, //if item is in the database already
+        initialQty: itemQty //used to determine if item has changed from original value and update needs to be sent to server
       }
 
       let newItems = [...state.inventoryItems, newItem];
@@ -40,9 +60,16 @@ export default class App extends Component {
   deleteItemHandler(index) {
     this.setState((state, props) => {
       let newItems = [...state.inventoryItems];
-      newItems.splice(index);
+      let deletedItem = newItems.splice(index);
+
+      let itemsToRemove = state.itemsToRemove
+      //determine if an item should be added to the delete array if deleted. If in the delete array, a delete request for the item must be sent to the server. Only items that were in the DB before and need to be removed should be added to the delete array.
+      if (deletedItem.inDb) {
+        itemsToRemove.push(deletedItem);
+      }
       return {
-        inventoryItems: newItems
+        inventoryItems: newItems,
+        itemsToRemove: itemsToRemove
       }
     })
   }
@@ -51,6 +78,10 @@ export default class App extends Component {
     this.setState((state, props) => {
       let newItems = [...state.inventoryItems];
       newItems[index].qty = newQty;
+      //check to see if qty changed from initial state and if it is in the database
+      if (newItems[index].qty === newItems[index].initialQty && newItems[index].inDb) {
+        newItems[index].changed = false
+      } else newItems[index].changed = true
       return {
         inventoryItems: newItems
       };
@@ -62,6 +93,10 @@ export default class App extends Component {
     this.setState((state, props) => {
       let newItems = [...state.inventoryItems];
       newItems[index].qty--;
+       //check to see if qty changed from initial state and if it is in the database
+       if (newItems[index].qty === newItems[index].initialQty && newItems[index].inDb) {
+        newItems[index].changed = false
+      } else newItems[index].changed = true
       return {
         inventoryItems: newItems
       }
@@ -73,6 +108,10 @@ export default class App extends Component {
     this.setState((state, props) => {
       let newItems = [...state.inventoryItems];
       newItems[index].qty++;
+       //check to see if qty changed from initial state and if it is in the database
+       if (newItems[index].qty === newItems[index].initialQty && newItems[index].inDb) {
+        newItems[index].changed = false
+      } else newItems[index].changed = true
       return {
         inventoryItems: newItems
       }

@@ -1,0 +1,7 @@
+.changed-item {
+    background-color: rgb(247, 236, 94);
+}
+
+.unchanged-item {
+    background-color:rgb(168, 247, 94)
+}

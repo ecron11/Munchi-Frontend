@@ -1,12 +1,13 @@
 import React from 'react'
+import './inventory.css'
 
 export default function Inventory(props) {
     let InventoryCards = props.inventoryItems.map((item, index) => 
-        <div key={index}>
+        <div key={index} className={item.changed ? "changed-item" : "unchanged-item"}>
             <span>{item.name} - </span>
             <button onClick={() => props.decrementHandler(index)}>-</button>
             <input 
-                onChange={(event) => props.qtyChangeHandler(index, event.target.value)} 
+                onChange={(event) => props.qtyChangeHandler(index, Number(event.target.value))} 
                 value={item.qty}
                 /> 
             <button onClick={() => props.incrementHandler(index)}>+</button>
