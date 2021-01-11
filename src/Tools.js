@@ -24,7 +24,7 @@ export default class Tools extends Component {
 
     //Handler for the click event calls handler sent down in props. 
     clickHandler() {
-        this.props.clickHandler(this.state.itemName, this.state.itemQty, this.state.itemQtyUnit)
+        this.props.clickHandler(this.state.itemName, Number(this.state.itemQty), this.state.itemQtyUnit)
         this.setState({
             itemName: "",
             itemQty: "",
