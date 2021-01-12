@@ -16,28 +16,120 @@ export default class App extends Component {
     this.qtyChangeHandler = this.qtyChangeHandler.bind(this);
     this.save = this.save.bind(this);
     this.loadInventory = this.loadInventory.bind(this);
-    this.fetchInventoryItems = this.fetchInventoryItems.bind(this);
 
     this.state = {
-       inventoryItems : [],
-       itemsToRemove : []
+      currentInventoryID: "",
+      inventoryItems : [],
+      itemsToRemove : []
     }
   }
 
-  //fetches the inventory items based on an inventory ID
-  fetchInventoryItems() {
-    
-  }
-
   save() {
-    //Create add items array
-    //Create update items array
-    //iterate through items and assign to each array
-    //send delete items request
-    //send update items request
-    //send add items request
+
+    let updateItems = [];
+    let addItems = [];
+
+    this.state.inventoryItems.forEach((item, index) => {
+      //If the item is changed it must be added to the database, or updated if it hasn't been already.
+      //if not, don't update
+      if (item.changed) {
+        if(item.inDb) {
+          //create new item to add to array
+          let updateItem = {
+            id : item._id,
+            name : item.name,
+            qty : item.qty,
+            qtyUnit : item.qtyUnit
+          }
+          updateItems.push(updateItem);
+        } else {
+          let addItem = {
+            id : item._id,
+            name : item.name,
+            qty : item.qty,
+            qtyUnit : item.qtyUnit,
+            index : index // To add database id's for new items after API call
+          }
+          addItems.push(addItem);
+        }}});
+      
+      //Set the state of all of the items to be in database and unchanged
+      //TODO move til after API call is returned. After UI is disabled
+      this.setState((state, props) => {
+        let newItems = [...state.inventoryItems];
+        //Set each item to in database and unchanged
+        newItems.forEach((item ,index) => {
+          item.inDb = true;
+          item.changed = false;
+          item.initialQty = item.qty;
+        })
+        return {
+          inventoryItems: newItems
+        }
+      })
+
+      //send delete requests
+      this.state.itemsToRemove.forEach((item) => {
+        fetch(`http://munchi-api.erik-longuepee.com/deleteInventoryItemByID/${item._id}`, {method: 'DELETE'})
+        .then(response => response.json())
+        .then(data => {
+          console.log(`Item with name: ${item.name} and id ${item._id} deleted`);
+        })
+      });
+
+      //remove all the remove items array as they are removed from the db now
+      this.setState({
+        itemsToRemove: []
+      });
+
+      //send update requests
+      updateItems.forEach((item) => {
+        fetch('http://munchi-api.erik-longuepee.com/updateInventoryItemByID/', {
+          method: "PUT",
+          headers: {
+              'Accept': 'application/json',
+              'Content-Type': 'application/json',
+            },
+          body:  JSON.stringify(item)
+        })
+        .then(response => response.json())
+        .then(data => {
+          console.log(`Item with name: ${item.name} and id ${item.id} updated`);
+        })
+      })
+
+      //send add requests
+      addItems.forEach(item => {
+        item.inventoryId = this.state.currentInventoryID;
+        fetch('http://munchi-api.erik-longuepee.com/createInventoryItem/', {
+          method: "POST",
+          headers: {
+              'Accept': 'application/json',
+              'Content-Type': 'application/json',
+            },
+          body:  JSON.stringify(item)
+        })
+        .then(response => response.json())
+        .then(data => {
+          //update the item's id in the state
+          this.setState((state) => {
+            let newInventoryItems = state.inventoryItems;
+            newInventoryItems[item.index]._id = data.item._id;
+            return {
+              inventoryItems: newInventoryItems
+            }
+          })
+          console.log(item);
+          console.log(data);
+          console.log(`Item with name: ${item.name} and id: ${data.item._id} added`);
+        })
+      })
+
+      
+      
   }
   
+  //loads an inventory from the API
   loadInventory(inventoryId) {
     fetch(`http://munchi-api.erik-longuepee.com/getInventoryItemsByInventoryId/${inventoryId}`)
     .then(response => response.json()) //converts the response when received
@@ -48,11 +140,15 @@ export default class App extends Component {
         item.inDb = true;
         item.changed = false;
         item.initialQty = item.qty;
-        this.setState({
-          inventoryItems: newInventoryItems
-        })
+        });
+
+      console.log(newInventoryItems);
+      this.setState({
+        inventoryItems: newInventoryItems,
+        currentInventoryID: inventoryId
       });
-    })
+      }
+    )
   }
 
   //handler for adding items
@@ -78,10 +174,14 @@ export default class App extends Component {
   deleteItemHandler(index) {
     this.setState((state, props) => {
       let newItems = [...state.inventoryItems];
-      let deletedItem = newItems.splice(index,1); //remove one item at the desired index
+      //remove one item at the desired index. Splice makes a sub-array so need to take the 1st index to get the item
+      let deletedItem = newItems.splice(index,1)[0]; 
 
+      console.log(deletedItem);
       let itemsToRemove = state.itemsToRemove
-      //determine if an item should be added to the delete array if deleted. If in the delete array, a delete request for the item must be sent to the server. Only items that were in the DB before and need to be removed should be added to the delete array.
+      //determine if an item should be added to the delete array if deleted. 
+      //If in the delete array, a delete request for the item must be sent to the server. 
+      //Only items that were in the DB before and need to be removed should be added to the delete array.
       if (deletedItem.inDb) {
         itemsToRemove.push(deletedItem);
       }
@@ -142,7 +242,8 @@ export default class App extends Component {
     //Create an object containing the different click handlers for the tools buttons
     let toolsHandlers = {
       addItem: this.addItemHandler,
-      loadInventory: this.loadInventory //TODO call another function that loads animation and promise
+      loadInventory: this.loadInventory, //TODO call another function that loads animation and promise
+      save: this.save
     }
 
     return (
