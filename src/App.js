@@ -14,13 +14,15 @@ export default class App extends Component {
     this.decrementHandler = this.decrementHandler.bind(this);
     this.incrementHandler = this.incrementHandler.bind(this);
     this.qtyChangeHandler = this.qtyChangeHandler.bind(this);
+    this.cancelAllChanges = this.cancelAllChanges.bind(this);
     this.save = this.save.bind(this);
     this.loadInventory = this.loadInventory.bind(this);
 
     this.state = {
       currentInventoryID: "",
       inventoryItems : [],
-      itemsToRemove : []
+      itemsToRemove : [],
+      lastSavedState: []
     }
   }
 
@@ -142,10 +144,18 @@ export default class App extends Component {
         item.initialQty = item.qty;
         });
 
-      console.log(newInventoryItems);
+      //create copy of items for last saved state property
+      //Need to iterate this way to make sure that enitrely new objects are created, not just an array of references to them
+
+      let lastSavedState = []
+      newInventoryItems.forEach(item => {
+        lastSavedState.push({...item});
+      })
       this.setState({
         inventoryItems: newInventoryItems,
-        currentInventoryID: inventoryId
+        currentInventoryID: inventoryId,
+        itemsToRemove: [],
+        lastSavedState: lastSavedState
       });
       }
     )
@@ -166,6 +176,20 @@ export default class App extends Component {
       let newItems = [...state.inventoryItems, newItem];
       return {
         inventoryItems: newItems
+      }
+    })
+  }
+
+  //Removes all changes by reverting to inventory state stored in inital state.
+  cancelAllChanges() {
+    this.setState((state) => {
+      //create a new array of new objects. Need to have an array of enitrely new object not just references to them
+      let newInventoryItems = [];
+      state.lastSavedState.forEach(item => {
+        newInventoryItems.push({...item});
+      })
+      return {
+        inventoryItems: newInventoryItems
       }
     })
   }
@@ -236,14 +260,14 @@ export default class App extends Component {
     })
   }
 
-  
 
   render() {
     //Create an object containing the different click handlers for the tools buttons
     let toolsHandlers = {
       addItem: this.addItemHandler,
       loadInventory: this.loadInventory, //TODO call another function that loads animation and promise
-      save: this.save
+      save: this.save,
+      cancelAllChanges: this.cancelAllChanges
     }
 
     return (

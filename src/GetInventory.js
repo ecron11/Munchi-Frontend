@@ -30,7 +30,7 @@ export default class GetInventory extends Component {
             <div className="load-inventory-tool">
                 <label>Load Inventory</label>
                 <input onChange={this.changeHandler} name="inventoryId" value={this.state.inventoryId}/>
-                <button onClick={this.clickHandler}>Load</button>
+                <button onClick={this.clickHandler}>Load or Create Pantry</button>
             </div>
         )
     }
