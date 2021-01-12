@@ -15,6 +15,7 @@ export default class App extends Component {
     this.incrementHandler = this.incrementHandler.bind(this);
     this.qtyChangeHandler = this.qtyChangeHandler.bind(this);
     this.save = this.save.bind(this);
+    this.loadInventory = this.loadInventory.bind(this);
     this.fetchInventoryItems = this.fetchInventoryItems.bind(this);
 
     this.state = {
@@ -47,10 +48,10 @@ export default class App extends Component {
         item.inDb = true;
         item.changed = false;
         item.initialQty = item.qty;
+        this.setState({
+          inventoryItems: newInventoryItems
+        })
       });
-      this.setState({
-        inventoryItems: newInventoryItems
-      })
     })
   }
 
@@ -77,7 +78,7 @@ export default class App extends Component {
   deleteItemHandler(index) {
     this.setState((state, props) => {
       let newItems = [...state.inventoryItems];
-      let deletedItem = newItems.splice(index);
+      let deletedItem = newItems.splice(index,1); //remove one item at the desired index
 
       let itemsToRemove = state.itemsToRemove
       //determine if an item should be added to the delete array if deleted. If in the delete array, a delete request for the item must be sent to the server. Only items that were in the DB before and need to be removed should be added to the delete array.
@@ -138,10 +139,16 @@ export default class App extends Component {
   
 
   render() {
+    //Create an object containing the different click handlers for the tools buttons
+    let toolsHandlers = {
+      addItem: this.addItemHandler,
+      loadInventory: this.loadInventory //TODO call another function that loads animation and promise
+    }
+
     return (
       <div>
         <TopNav />
-        <Tools clickHandler={this.addItemHandler}/>
+        <Tools clickHandlers={toolsHandlers}/>
         <Inventory 
           
           inventoryItems={this.state.inventoryItems} 
