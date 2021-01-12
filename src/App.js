@@ -37,6 +37,23 @@ export default class App extends Component {
     //send add items request
   }
   
+  loadInventory(inventoryId) {
+    fetch(`http://munchi-api.erik-longuepee.com/getInventoryItemsByInventoryId/${inventoryId}`)
+    .then(response => response.json()) //converts the response when received
+    .then(data => { //after the response has been received do what you want with it. In this case load the inventory items into the state
+      let newInventoryItems = data.items;
+      newInventoryItems.forEach(item => {
+        //Add the local properties for each object
+        item.inDb = true;
+        item.changed = false;
+        item.initialQty = item.qty;
+      });
+      this.setState({
+        inventoryItems: newInventoryItems
+      })
+    })
+  }
+
   //handler for adding items
   addItemHandler(itemName, itemQty, itemQtyUnit) {
     this.setState((state, props) => {
@@ -117,6 +134,8 @@ export default class App extends Component {
       }
     })
   }
+
+  
 
   render() {
     return (
