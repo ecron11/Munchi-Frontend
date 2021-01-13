@@ -2,6 +2,10 @@
     list-style: none;
 }
 
+.TopNav > ul > li {
+    display: inline;
+}
+
 #logoImg {
     height: 70px;
     width: auto;

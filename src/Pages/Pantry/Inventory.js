@@ -18,6 +18,7 @@ export default function Inventory(props) {
 
     return (
         <div>
+            <h2>Currently working on inventory : {props.inventoryName}</h2>
             {InventoryCards}
         </div>
     )
