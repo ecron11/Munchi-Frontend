@@ -70,7 +70,7 @@ export default class Pantry extends Component {
 
       //send delete requests
       this.state.itemsToRemove.forEach((item) => {
-        fetch(`https://munchi-api.erik-longuepee.com/deleteInventoryItemByID/${item._id}`, {method: 'DELETE'})
+        fetch(`${process.env}/deleteInventoryItemByID/${item._id}`, {method: 'DELETE'})
         .then(response => response.json())
         .then(data => {
           console.log(`Item with name: ${item.name} and id ${item._id} deleted`);
@@ -84,7 +84,7 @@ export default class Pantry extends Component {
 
       //send update requests
       updateItems.forEach((item) => {
-        fetch('https://munchi-api.erik-longuepee.com/updateInventoryItemByID/', {
+        fetch(`${process.env}/updateInventoryItemByID/`, {
           method: "PUT",
           headers: {
               'Accept': 'application/json',
@@ -101,7 +101,7 @@ export default class Pantry extends Component {
       //send add requests
       addItems.forEach(item => {
         item.inventoryId = this.state.currentInventoryID;
-        fetch('https://munchi-api.erik-longuepee.com/createInventoryItem/', {
+        fetch(`${process.env}/createInventoryItem/`, {
           method: "POST",
           headers: {
               'Accept': 'application/json',
@@ -131,7 +131,7 @@ export default class Pantry extends Component {
   
   //loads an inventory from the API
   loadInventory(inventoryId) {
-    fetch(`https://munchi-api.erik-longuepee.com/getInventoryItemsByInventoryId/${inventoryId}`)
+    fetch(`${process.env}/getInventoryItemsByInventoryId/${inventoryId}`)
     .then(response => response.json()) //converts the response when received
     .then(data => { //after the response has been received do what you want with it. In this case load the inventory items into the state
       let newInventoryItems = data.items;
