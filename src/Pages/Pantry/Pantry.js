@@ -4,7 +4,9 @@ import Inventory from './Inventory'
 import React, { Component } from 'react'
 
 export default class Pantry extends Component {
+
   constructor(props) {
+    
     super(props)
 
     this.addItemHandler = this.addItemHandler.bind(this);
@@ -23,6 +25,7 @@ export default class Pantry extends Component {
       lastSavedState: []
     }
   }
+  
 
   save() {
 
@@ -70,7 +73,7 @@ export default class Pantry extends Component {
 
       //send delete requests
       this.state.itemsToRemove.forEach((item) => {
-        fetch(`${process.env}/deleteInventoryItemByID/${item._id}`, {method: 'DELETE'})
+        fetch(`http://localhost:3000/deleteInventoryItemByID/${item._id}`, {method: 'DELETE'})
         .then(response => response.json())
         .then(data => {
           console.log(`Item with name: ${item.name} and id ${item._id} deleted`);
@@ -84,7 +87,7 @@ export default class Pantry extends Component {
 
       //send update requests
       updateItems.forEach((item) => {
-        fetch(`${process.env}/updateInventoryItemByID/`, {
+        fetch(`http://localhost:3000/updateInventoryItemByID/`, {
           method: "PUT",
           headers: {
               'Accept': 'application/json',
@@ -101,7 +104,7 @@ export default class Pantry extends Component {
       //send add requests
       addItems.forEach(item => {
         item.inventoryId = this.state.currentInventoryID;
-        fetch(`${process.env}/createInventoryItem/`, {
+        fetch(`http://localhost:3000/createInventoryItem/`, {
           method: "POST",
           headers: {
               'Accept': 'application/json',
@@ -131,7 +134,12 @@ export default class Pantry extends Component {
   
   //loads an inventory from the API
   loadInventory(inventoryId) {
-    fetch(`${process.env}/getInventoryItemsByInventoryId/${inventoryId}`)
+    fetch(`${this.props.apiUrl}/getInventoryItemsByInventoryId/${inventoryId}`, {
+      headers : { 
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+       }
+    })
     .then(response => response.json()) //converts the response when received
     .then(data => { //after the response has been received do what you want with it. In this case load the inventory items into the state
       let newInventoryItems = data.items;

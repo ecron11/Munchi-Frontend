@@ -2,7 +2,7 @@ import React from 'react'
 import { Link } from 'react-router-dom'
 import './TopNav.css'
 
-export default function TopNav() {
+export default function TopNav(props) {
     return (
         <nav className="TopNav">
             <ul>
@@ -21,7 +21,9 @@ export default function TopNav() {
                         Login
                     </Link>
                 </li>
+
             </ul>
+            <p>{`Welcome ${props.name}!`}</p>
         </nav>
     )
 }
