@@ -1,10 +1,10 @@
 import React from 'react'
 
 
-export default function Login() {
+export default function Login(props) {
     return (
         <div>
-            <a href={'http://localhost:3000/auth/google/'}><button>Login with Google</button></a>
+            <a href={`${props.apiUrl}/auth/google/`}><button>Login with Google</button></a>
         </div>
     )
 }

@@ -20,7 +20,7 @@ export default function TopNav(props) {
             </Link>
         </li>, 
         <li key="logoutLink">
-            <a href="http://localhost:3000/auth/logout">
+            <a href={this.props.apiUrl}>
                 Logout
             </a>
         </li>,

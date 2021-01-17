@@ -37,7 +37,7 @@ export default class App extends Component {
     return (
       <Router>
         <div className="container">
-        <TopNav loggedIn={this.state.loggedIn} user={this.state.user}/>
+        <TopNav loggedIn={this.state.loggedIn} user={this.state.user} apiUrl={this.state.apiUrl}/>
         </div>
         <Switch>
           <Route exact path='/Home' component={Home} />
@@ -47,7 +47,7 @@ export default class App extends Component {
           </Route>
           {/* Route for Login. Redirects to home if logged in */}
           <Route exact path='/Login'>
-           {this.state.loggedIn ? (<Redirect to="/Home" />) : (<Login />)}
+           {this.state.loggedIn ? (<Redirect to="/Home" />) : (<Login apiUrl={this.state.apiUrl}/>)}
           </Route>
         </Switch>
       </Router>
