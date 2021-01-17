@@ -3,25 +3,32 @@ import TopNav from './TopNav';
 import Home from './Pages/Home/Home';
 import Pantry from './Pages/Pantry/Pantry';
 import Login from './Pages/Login/Login';
-import {Route, BrowserRouter as Router, Switch} from 'react-router-dom'
+import {Route, BrowserRouter as Router, Switch, Redirect} from 'react-router-dom'
 
 export default class App extends Component {
   constructor(props) {
     super(props)
   
     this.state = {
-       user: {}
+      loggedIn: false,
+      user: {},
+      apiUrl: 'https://munchi-api.erik-longuepee.com'
     }
   }
   
   componentDidMount() {
-    fetch('http://localhost:3000/auth/checkCurrentUser',{
+    fetch(`${this.state.apiUrl}/auth/checkCurrentUser`,{
     credentials: 'include'})
     .then(response => response.json())
     .then(data => {
-      console.log(data);
+      let loggedIn = false;
+      if ('user' in data)
+      {
+        loggedIn = true;
+      }
       this.setState({
-        user: data.user
+        user: data.user,
+        loggedIn: loggedIn
       })
     })
   }
@@ -30,13 +37,18 @@ export default class App extends Component {
     return (
       <Router>
         <div className="container">
-        <h1></h1>
-        <TopNav name={this.state.user.firstName ? this.state.user.firstName : ""}/>
+        <TopNav loggedIn={this.state.loggedIn} user={this.state.user}/>
         </div>
         <Switch>
           <Route exact path='/Home' component={Home} />
-          <Route exact path='/Pantry' component={Pantry} />
-          <Route exact path='/Login' component={Login} />
+          {/* Route for pantry app. Redirects to home if not logged int */}
+          <Route exact path='/Pantry'>
+            {this.state.loggedIn ? (<Pantry apiUrl={this.state.apiUrl}/>) : (<Redirect to="/Home"/>)}
+          </Route>
+          {/* Route for Login. Redirects to home if logged in */}
+          <Route exact path='/Login'>
+           {this.state.loggedIn ? (<Redirect to="/Home" />) : (<Login />)}
+          </Route>
         </Switch>
       </Router>
     )

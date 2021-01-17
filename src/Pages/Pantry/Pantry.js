@@ -16,9 +16,13 @@ export default class Pantry extends Component {
     this.qtyChangeHandler = this.qtyChangeHandler.bind(this);
     this.cancelAllChanges = this.cancelAllChanges.bind(this);
     this.save = this.save.bind(this);
+    this.getUserInventories = this.getUserInventories.bind(this);
     this.loadInventory = this.loadInventory.bind(this);
-
+    this.createInventory = this.createInventory.bind(this);
     this.state = {
+      invLoaded: false,
+      inventories: [],
+      currentInventoryName: "",
       currentInventoryID: "",
       inventoryItems : [],
       itemsToRemove : [],
@@ -26,6 +30,9 @@ export default class Pantry extends Component {
     }
   }
   
+  componentDidMount() {
+    this.getUserInventories();
+  }
 
   save() {
 
@@ -73,7 +80,7 @@ export default class Pantry extends Component {
 
       //send delete requests
       this.state.itemsToRemove.forEach((item) => {
-        fetch(`http://localhost:3000/deleteInventoryItemByID/${item._id}`, {method: 'DELETE'})
+        fetch(`${this.props.apiUrl}/deleteInventoryItemByID/${item._id}`, {method: 'DELETE'})
         .then(response => response.json())
         .then(data => {
           console.log(`Item with name: ${item.name} and id ${item._id} deleted`);
@@ -87,7 +94,7 @@ export default class Pantry extends Component {
 
       //send update requests
       updateItems.forEach((item) => {
-        fetch(`http://localhost:3000/updateInventoryItemByID/`, {
+        fetch(`${this.props.apiUrl}/updateInventoryItemByID/`, {
           method: "PUT",
           headers: {
               'Accept': 'application/json',
@@ -104,7 +111,7 @@ export default class Pantry extends Component {
       //send add requests
       addItems.forEach(item => {
         item.inventoryId = this.state.currentInventoryID;
-        fetch(`http://localhost:3000/createInventoryItem/`, {
+        fetch(`${this.props.apiUrl}/createInventoryItem/`, {
           method: "POST",
           headers: {
               'Accept': 'application/json',
@@ -131,10 +138,64 @@ export default class Pantry extends Component {
       
       
   }
+
+  //gets users inventories
+  getUserInventories() {
+    fetch(`${this.props.apiUrl}/inv/getInventoriesByUser`,{ 
+        credentials: 'include'})
+    .then(response => response.json())
+    .then(data => {
+      if('inventories' in data) {
+        this.setState({
+          inventories: data.inventories
+        })
+      }
+    })
+  }
   
-  //loads an inventory from the API
-  loadInventory(inventoryId) {
-    fetch(`${this.props.apiUrl}/getInventoryItemsByInventoryId/${inventoryId}`, {
+  //creates an inventory and saves it to API
+  createInventory(inventoryName) {
+    fetch(`${this.props.apiUrl}/inv/createInventory/${inventoryName}`, {
+      credentials: 'include'
+    })
+    .then(response => response.json())
+    .then(data => {
+
+      if ('error' in data) {
+        console.log(console.error(data.error));
+      } else {
+        let newInventoryItems = data.items;
+        newInventoryItems.forEach(item => {
+          //Add the local properties for each object
+          item.inDb = true;
+          item.changed = false;
+          item.initialQty = item.qty;
+        });
+
+        //create copy of items for last saved state property
+        //Need to iterate this way to make sure that enitrely new objects are created, not just an array of references to them
+
+        let lastSavedState = []
+        newInventoryItems.forEach(item => {
+          lastSavedState.push({...item});
+        })
+        this.setState({
+          invLoaded: true,
+          inventoryItems: newInventoryItems,
+          currentInventoryName: data.name,
+          currentInventoryID: data._id,
+          itemsToRemove: [],
+          lastSavedState: lastSavedState
+        });
+        //updates the inventories available
+        this.getUserInventories();
+      }
+    })
+  }
+
+  //loads an inventory's items from the API
+  loadInventory(inventory) {
+    fetch(`${this.props.apiUrl}/getInventoryItemsByInventoryId/${inventory._id}`, {
       headers : { 
         'Content-Type': 'application/json',
         'Accept': 'application/json'
@@ -158,8 +219,10 @@ export default class Pantry extends Component {
         lastSavedState.push({...item});
       })
       this.setState({
+        invLoaded: true,
         inventoryItems: newInventoryItems,
-        currentInventoryID: inventoryId,
+        currentInventoryName: inventory.name,
+        currentInventoryID: inventory._id,
         itemsToRemove: [],
         lastSavedState: lastSavedState
       });
@@ -271,17 +334,18 @@ export default class Pantry extends Component {
     //Create an object containing the different click handlers for the tools buttons
     let toolsHandlers = {
       addItem: this.addItemHandler,
-      loadInventory: this.loadInventory, //TODO call another function that loads animation and promise
+      createInventory: this.createInventory,
+      loadInventory: this.loadInventory,
       save: this.save,
       cancelAllChanges: this.cancelAllChanges
     }
 
     return (
       <div>
-        <Tools clickHandlers={toolsHandlers}/>
+        <Tools clickHandlers={toolsHandlers} inventories={this.state.inventories} invLoaded={this.state.invLoaded}/>
         <Inventory 
           
-          inventoryName={this.state.currentInventoryID}
+          inventoryName={this.state.currentInventoryName}
           inventoryItems={this.state.inventoryItems} 
           qtyChangeHandler={this.qtyChangeHandler}
           deleteHandler={this.deleteItemHandler}
