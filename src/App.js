@@ -12,7 +12,8 @@ export default class App extends Component {
     this.state = {
       loggedIn: false,
       user: {},
-      apiUrl: 'https://munchi-api.erik-longuepee.com'
+      apiUrl: 'http://localhost:3000'
+      // apiUrl: 'https://munchi-api.erik-longuepee.com'
     }
   }
   
