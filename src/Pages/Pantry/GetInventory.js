@@ -1,4 +1,7 @@
+import { faChevronCircleDown } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React, { Component } from 'react'
+import { Button, Accordion, Card, Form } from 'react-bootstrap';
 
 export default class GetInventory extends Component {
     constructor(props) {
@@ -63,17 +66,24 @@ export default class GetInventory extends Component {
 
 
         return (
-            <div className="load-inventory-tool">
-                <label>Load Inventory</label>
+            <Accordion className="load-inventory-tool mx-1">
+                <Card style={{ width: '16rem'}} bg={this.props.bgVariant} padding="1" text="white">
+                    <Accordion.Toggle style={{ height: '3rem' }} as={Card.Header} align="center" eventKey="0">
+                        Load or Create Pantry <FontAwesomeIcon icon={faChevronCircleDown} />
+                    </Accordion.Toggle>
+                    <Accordion.Collapse eventKey="0">
+                        <Card.Body>
+                            <Form.Control as="select" onChange={this.changeHandler} name="inventoryId" value={this.state.inventoryId}>
+                                {inventoryOptions}
+                            </Form.Control>
+                            <Button block className="my-2" variant={this.props.btnVariant} onClick={this.loadClickHandler}>Load Pantry</Button>
 
-                <select onChange={this.changeHandler} name="inventoryId" value={this.state.inventoryId}>
-                    {inventoryOptions}
-                </select>
-                <button onClick={this.loadClickHandler}>Load Pantry</button>
-
-                <input onChange={this.changeHandler} name="newInventoryName" value={this.state.newInventoryName}/>
-                <button onClick={this.createClickHandler}>Create new Pantry</button>
-            </div>
+                            <Form.Control onChange={this.changeHandler} name="newInventoryName" value={this.state.newInventoryName}/>
+                            <Button block className="my-2" variant={this.props.btnVariant} onClick={this.createClickHandler}>Create new Pantry</Button>
+                        </Card.Body>
+                    </Accordion.Collapse>
+                </Card>
+            </Accordion>
         )
     }
 }

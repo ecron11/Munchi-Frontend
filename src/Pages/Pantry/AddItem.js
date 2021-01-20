@@ -1,4 +1,7 @@
+import { faChevronCircleDown } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React, { Component } from 'react'
+import { Button, Accordion, Card, Form } from 'react-bootstrap';
 
 export default class AddItem extends Component {
     constructor(props) {
@@ -34,15 +37,26 @@ export default class AddItem extends Component {
     render() {
 
         return (
-            <div className="add-item-tool">
-                <label htmlFor="itemName">Item Name</label>
-                <input onChange={this.changeHandler} name="itemName" value={this.state.itemName}/>
-                <label htmlFor="itemQty">Quantity</label>
-                <input onChange={this.changeHandler} name="itemQty" value={this.state.itemQty}/>
-                <label htmlFor="itemQtyUnit">Unit</label>
-                <input onChange={this.changeHandler} name="itemQtyUnit" value={this.state.itemQtyUnit} placeholder="Pounds, bunches, etc.." />
-                <button onClick={this.clickHandler}>Add New Item</button>
-            </div>
+            <Accordion className="add-item-tool mx-1">
+                <Card style={{ width: '16rem'}} align="center" bg={this.props.bgVariant} text="white">
+                    <Accordion.Toggle style={{ height: '3rem' }} as={Card.Header} eventKey="1">
+                        Create New Item <FontAwesomeIcon icon={faChevronCircleDown} />
+                    </Accordion.Toggle>
+                    <Accordion.Collapse eventKey="1">
+                        <Card.Body>
+                            <Form  onSubmit={this.clickHandler}>
+                                <Form.Label className="mt-2" htmlFor="itemName">Item Name</Form.Label>
+                                <Form.Control onChange={this.changeHandler} name="itemName" value={this.state.itemName}/>
+                                <Form.Label className="mt-2" htmlFor="itemQty">Quantity</Form.Label>
+                                <Form.Control type="number" onChange={this.changeHandler} name="itemQty" value={this.state.itemQty}/>
+                                <Form.Label className="mt-2" htmlFor="itemQtyUnit">Unit</Form.Label>
+                                <Form.Control onChange={this.changeHandler} name="itemQtyUnit" value={this.state.itemQtyUnit} placeholder="Pounds, bunches, etc.." />
+                                <Button className="my-2" block variant={this.props.btnVariant} onClick={this.clickHandler}>Add New Item</Button>
+                            </Form>
+                        </Card.Body> 
+                    </Accordion.Collapse>
+                </Card>
+            </Accordion>
         )
     }
 }
