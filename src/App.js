@@ -13,8 +13,8 @@ export default class App extends Component {
     this.state = {
       loggedIn: false,
       user: {},
-      // apiUrl: 'http://localhost:3000'
-      apiUrl: 'https://munchi-api.erik-longuepee.com'
+      apiUrl: 'http://localhost:3000'
+      // apiUrl: 'https://munchi-api.erik-longuepee.com'
     }
   }
   
@@ -41,6 +41,9 @@ export default class App extends Component {
         <Router>
           <TopNav loggedIn={this.state.loggedIn} user={this.state.user} apiUrl={this.state.apiUrl}/>
           <Switch>
+            <Route exact path='/'>
+              <Redirect to='/Home' />
+            </Route>
             <Route exact path='/Home' component={Home} />
             {/* Route for pantry app. Redirects to home if not logged int */}
             <Route exact path='/Pantry'>
