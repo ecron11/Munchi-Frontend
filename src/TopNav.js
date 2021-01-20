@@ -11,7 +11,7 @@ export default function TopNav(props) {
         , 
         <Navbar.Brand key="logoLink">
             <Link to='/Home'>
-                <img height="70" id="logoImg" src="./logo-dark.png" alt="logo"/>
+                <img height="70" id="logoImg" src="./logo.png" alt="logo"/>
             </Link>
         </Navbar.Brand>
         ]
