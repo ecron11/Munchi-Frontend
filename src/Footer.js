@@ -5,8 +5,8 @@ import { Container, Nav, Navbar } from 'react-bootstrap'
 
 export default function Footer() {
     return (
-        <Navbar bg="dark" variant="dark" className="mt-3 mt-auto d-flex flex-wrap">
-            <Container>
+        <Navbar bg="dark" variant="dark" className="mt-auto">
+            <Container className="d-flex flex-wrap">
                 <Navbar.Brand href="https://www.erik-longuepee.com/" target="_blank" rel="noopener noreferrer" className="ml-2"><img height="50" src="./logo_small.png" alt="logo" /> A project by Erik Longuepee</Navbar.Brand>
                 <Nav className="d-flex flex-wrap">
                     <Nav.Link href="https://github.com/ecron11" target="_blank" rel="noopener noreferrer">Github <FontAwesomeIcon icon={faGithub} /></Nav.Link>
