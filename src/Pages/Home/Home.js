@@ -1,5 +1,5 @@
 import React from 'react'
-import { Button, Card, CardDeck, Col, Container, Jumbotron, Row } from 'react-bootstrap'
+import { Button, Card, CardDeck, Container, Jumbotron } from 'react-bootstrap'
 import { Link } from 'react-router-dom'
 
 export default function Home() {
@@ -25,7 +25,7 @@ export default function Home() {
                     <Card.Title className="mt-2" align="center">Pantry</Card.Title>
                     <hr />
                     <Card.Body>Munchi Pantry allows you to keep track of everything in your kitchen</Card.Body>
-                    <Button>Try it!</Button>
+                    <Link to="/Pantry"><Button block>Try it!</Button></Link>
                 </Card>
                 <Card  className="p-3">
                     <Card.Img className="p-5" variant="top" src="./Recipe.png" />
@@ -44,7 +44,7 @@ export default function Home() {
             </CardDeck>
 
             <h4 align="center" className="my-4">How it's made:</h4>
-            <p>Munchi is made with the MERN Stack (MongoDb, Express, React, and Node) and hosted on AWS. It was made entirely by one person (expect for the wonderful logo that was created by the equally wonderful Clarissa Gomez.</p>
+            <p>Munchi is made with the MERN Stack (MongoDb, Express, React, and Node) and hosted on AWS. It was made entirely by one person (except for the wonderful logo that was created by the equally wonderful Clarissa Gomez.</p>
         </Container>
     )
 }

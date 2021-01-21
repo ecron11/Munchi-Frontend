@@ -1,7 +1,7 @@
 import { faUserAstronaut } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import React from 'react'
-import { Nav, Navbar } from 'react-bootstrap'
+import { Container, Nav, Navbar } from 'react-bootstrap'
 import { Link } from 'react-router-dom'
 
 export default function TopNav(props) {
@@ -39,18 +39,23 @@ export default function TopNav(props) {
         )
     } else { //if not logged in, add login only
         navBarItems.push(
-            <Nav key="loggedOutNav">
-                <Navbar.Text>
-                    <Link to="/Login">
-                        Login
-                    </Link>
-                </Navbar.Text>
-            </Nav>
+            <Navbar.Collapse key="loggedOutNav">
+                <Nav >
+                    <Navbar.Text>
+                        <Link to="/Login">
+                            Login
+                        </Link>
+                    </Navbar.Text>
+                </Nav>
+            </Navbar.Collapse>
+            
         )
     }
     return (
-        <Navbar collapseOnSelect expand="md" bg="primary" variant="dark" className="TopNav" >
-            {navBarItems}
+        <Navbar collapseOnSelect expand="md" bg="primary" variant="dark" className="TopNav">
+            <Container>
+                {navBarItems}
+            </Container>
         </Navbar>
     )
 }
