@@ -62,7 +62,6 @@ export default class Pantry extends Component {
           }
           addItems.push(addItem);
         }}});
-      
       //Set the state of all of the items to be in database and unchanged
       //TODO move til after API call is returned. After UI is disabled
       this.setState((state, props) => {
@@ -293,6 +292,7 @@ export default class Pantry extends Component {
       if (newItems[index].qty === newItems[index].initialQty && newItems[index].inDb) {
         newItems[index].changed = false
       } else newItems[index].changed = true
+      console.log(newItems[index]);
       return {
         inventoryItems: newItems
       };

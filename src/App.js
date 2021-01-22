@@ -6,6 +6,8 @@ import Login from './Pages/Login/Login';
 import {Route, BrowserRouter as Router, Switch, Redirect} from 'react-router-dom'
 import { Container } from 'react-bootstrap';
 import Footer from './Footer';
+import Cookbook from './Pages/Cookbook/Cookbook';
+import ShoppingLists from './Pages/ShoppingLists/ShoppingLists';
 
 export default class App extends Component {
   constructor(props) {
@@ -14,8 +16,8 @@ export default class App extends Component {
     this.state = {
       loggedIn: false,
       user: {},
-      // apiUrl: 'http://localhost:3000'
-      apiUrl: 'https://munchi-api.erik-longuepee.com'
+      apiUrl: 'http://localhost:3000'
+      // apiUrl: 'https://munchi-api.erik-longuepee.com'
     }
   }
   
@@ -48,10 +50,20 @@ export default class App extends Component {
             <Route exact path='/Home'>
               <Home />
             </Route>
-            {/* Route for pantry app. Redirects to home if not logged int */}
+            {/* Route for pantry app. Redirects to login if not logged int */}
             <Route exact path='/Pantry'>
               {this.state.loggedIn ? (<Pantry apiUrl={this.state.apiUrl}/>) : (<Redirect to="/Login"/>)}
             </Route>
+            {/* Route for Cookbook app. Redirects to login if not logged in */}
+            <Route exact path='/Cookbook'>
+              {this.state.loggedIn ? (<Cookbook apiUrl={this.state.apiUrl}/>) : (<Redirect to="/Login"/>)}
+            </Route>
+
+            {/* Route for Shopping Lists app. Redirects to login if not logged in */}
+            <Route exact path='/ShoppingLists'>
+              {this.state.loggedIn ? (<ShoppingLists apiUrl={this.state.apiUrl}/>) : (<Redirect to="/Login"/>)}
+            </Route>
+
             {/* Route for Login. Redirects to home if logged in */}
             <Route exact path='/Login'>
             {this.state.loggedIn ? (<Redirect to="/Home" />) : (<Login apiUrl={this.state.apiUrl}/>)}

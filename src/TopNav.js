@@ -20,9 +20,19 @@ export default function TopNav(props) {
         navBarItems.push([
             <Navbar.Collapse key="loggedInNav">
                 <Nav>
-                    <Navbar.Text>
+                    <Navbar.Text className="mr-2">
                         <Link to="/Pantry">
                             Pantry
+                        </Link>
+                    </Navbar.Text>
+                    <Navbar.Text className="mr-2">
+                        <Link to="/Cookbook">
+                            Cookbook
+                        </Link>
+                    </Navbar.Text>
+                    <Navbar.Text className="mr-2">
+                        <Link to="/ShoppingLists">
+                            Shopping Lists
                         </Link>
                     </Navbar.Text>
                     <Nav.Link href={`${props.apiUrl}/auth/logout`}>

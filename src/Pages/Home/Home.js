@@ -29,16 +29,16 @@ export default function Home() {
                 </Card>
                 <Card  className="p-3">
                     <Card.Img className="p-5" variant="top" src="./Recipe.png" />
-                    <Card.Title className="mt-2" align="center">Recipes</Card.Title>
+                    <Card.Title className="mt-2" align="center">Cookbook</Card.Title>
                     <hr />
-                    <Card.Body>Munchi Recipes let you create and store recipes that will automatically draw from your pantry</Card.Body>
+                    <Card.Body>Munchi Cookbook lets you create and store recipes that will automatically draw from your pantry</Card.Body>
                     <Button variant="danger">Under construction!</Button>
                 </Card>
                 <Card className="p-3">
                     <Card.Img className="p-5" variant="top" src="./List.png" />
                     <Card.Title className="mt-2" align="center">Shopping Lists</Card.Title>
                     <hr />
-                    <Card.Body>Munchi Lists let you automatically create shopping lists based on recipes and presets</Card.Body>
+                    <Card.Body>Munchi Shopping Lists let you automatically create shopping lists based on recipes from your cookbook</Card.Body>
                     <Button variant="danger">Under construction!</Button>
                 </Card>
             </CardDeck>

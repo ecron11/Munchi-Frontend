@@ -53,7 +53,6 @@ export default class GetInventory extends Component {
     }
 
     render() {
-
         let inventoryOptions = []
         if (this.props.inventories){
             //create the inventory options
